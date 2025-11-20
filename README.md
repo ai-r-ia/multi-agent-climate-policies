@@ -1,56 +1,75 @@
-# Results Folder
+# LLM-Powered Multi-Agent Simulation for Climate Policy Evaluation
 
-This folder contains the results and analysis from CBAM (Carbon Border Adjustment Mechanism) policy simulation experiments using large language models.
+![Multi-Agent-Architecture](https://github.com/ai-r-ia/multi-agent-climate-policies/blob/main/multi_agent_arch.jpeg)
 
-## Overview
+## Overview: A Novel Policy Testbed
 
-The experiments simulate a policy-making process where AI agents representing different stakeholders (households and firms) provide feedback on the EU's Carbon Border Adjustment Mechanism policy. The policy maker then iteratively refines the policy based on this feedback.
+This repository contains the code and results for a novel **Large Language Model (LLM)-based Multi-Agent Simulation (MAS)** framework designed to evaluate climate policies.
+
+Traditional models (IAMs) often fail to capture **heterogeneity** and **bounded rationality**. Our framework addresses this by instantiating LLMs (e.g., Falcon-7B, Llama-8B) as diverse, empirically-calibrated agents (households and firms) with human-like reasoning and adaptive behavior.
+
+The core experiment simulates the iterative refinement of the **EU's Carbon Border Adjustment Mechanism (CBAM)** policy, where AI agents provide feedback and a central policymaker agent updates the policy accordingly.
+
+This system serves as a dynamic testbed to analyze **distributional effects**, **emergent dynamics**, and the **social robustness** of policies, providing micro-founded insights for cost-effective and socially feasible climate interventions.
+
+---
+
+## Key Simulation Structure
+
+The simulation centers around a robust iterative loop:
+
+1.  **Initial Policy**: The EU's CBAM description.
+2.  **Agent Personas (6 total)**:
+    * **Households (3)**: Middle-income climate-conscious, low-income cost-sensitive, high-income tech-savvy.
+    * **Firms (3)**: Small manufacturing (cost-focused), large chemical (clean tech investing), medium renewable energy startup.
+3.  **Iterative Process**:
+    * Agents provide feedback on the current policy version.
+    * The Policy Maker (simulated via GPT-5 in the research context) analyzes feedback, checks against **ethical guardrails**, and updates the policy.
+    * The process repeats for a specified number of iterations.
+
+---
+
+## Research Documentation & Key Findings
+
+### Research Paper
+The full research paper documenting the CBAM simulation methodology, LLM agent architecture, and detailed findings is available here:
+
+* [**Paper**](https://github.com/ai-r-ia/multi-agent-climate-policies/blob/main/paper.pdf)
+
+### Key Simulation Findings
+The results from the experiments demonstrate:
+* **Policy Evolution:** Tracking how policy language is refined through iterative feedback cycles (e.g., moving from narrow to balanced proposals).
+* **Model Performance:** Differences in response quality and policy judgment between LLM models (e.g., Falcon-7B excelled early; Llama performed worst overall).
+* **Optimal Iteration:** Moderate policy feedback cycles yield **targeted, useful adjustments**, while excessive iteration can lead to generic outcomes.
+* **Comparison:** Highlighting the differences in outcomes between "single" model mode and "mixed" model mode.
+![scores](https://github.com/ai-r-ia/multi-agent-climate-policies/blob/main/scores.png)
+---
 
 ## Files Description
 
 ### Simulation Scripts
-
-- **`model_var.py`** - Main simulation script that runs the CBAM policy simulation
-  - Supports both Falcon-7B and Llama-Guard-2-8B models
-  - Configurable simulation modes: "single" (one model) or "mixed" (random model selection)
-  - Simulates 6 different agent personas (3 households, 3 firms)
-  - Implements iterative policy refinement based on agent feedback
-
+* **`model_var.py`** - **Main simulation script.** This file executes the CBAM policy simulation, supports configurable modes (`single` or `mixed`), and manages the iterative policy refinement logic.
 
 ### Simulation Results
+The JSON files below contain detailed data from various simulation runs.
 
-The JSON files contain detailed results from different simulation runs:
+#### 15-Iteration Runs (Model Comparison)
+| File Name | Model | Mode | Iterations |
+| :--- | :--- | :--- | :--- |
+| `simulation_results_llama_single_15.json` | Llama-Guard-2-8B | Single | 15 |
+| `simulation_results_falcon_single_15.json` | Falcon-7B-Instruct | Single | 15 |
+| `simulation_results_falcon_mixed_15.json` | Falcon-7B-Instruct | Mixed | 15 |
 
-#### Model-Specific Results (15 iterations)
-- **`simulation_results_llama_single_15.json`** - Llama model, single mode, 15 iterations
-- **`simulation_results_falcon_single_15.json`** - Falcon model, single mode, 15 iterations  
-- **`simulation_results_falcon_mixed_15.json`** - Falcon model, mixed mode, 15 iterations
+#### Iteration Depth Runs (Falcon)
+| File Name | Model | Iterations |
+| :--- | :--- | :--- |
+| `simulation_results_3.json` | Falcon-7B-Instruct | 3 |
+| `simulation_results_5.json` | Falcon-7B-Instruct | 5 |
+| `simulation_results_10.json` | Falcon-7B-Instruct | 10 |
 
-#### Iteration-Specific Results (Falcon model)
-- **`simulation_results_3.json`** - Falcon model, 3 iterations
-- **`simulation_results_5.json`** - Falcon model, 5 iterations
-- **`simulation_results_10.json`** - Falcon model, 10 iterations
+### Data Format
+Each result file follows the structure below, including agent responses and model metadata:
 
-### Research Documentation
-
-- **`paper.pdf`** - Research paper documenting the CBAM simulation methodology and findings
-
-## Simulation Structure
-
-Each simulation run includes:
-
-1. **Initial Policy**: EU's Carbon Border Adjustment Mechanism description
-2. **Agent Personas**:
-   - **Households**: middle-income climate-conscious, low-income cost-sensitive, high-income tech-savvy
-   - **Firms**: small manufacturing (cost-focused), large chemical (clean tech investing), medium renewable energy startup
-3. **Iterative Process**: 
-   - Agents provide feedback on current policy
-   - Policy maker analyzes feedback and updates policy
-   - Process repeats for specified number of iterations
-
-## Data Format
-
-Each result file contains:
 ```json
 {
   "model_used": "model_name",
@@ -62,11 +81,9 @@ Each result file contains:
       "policy_version": "current_policy_text",
       "agent_responses": [
         {
-          "agent_type": "household|firm",
           "persona": "persona_description",
           "response": "full_agent_response",
           "response_summary": "summarized_response",
-          "response_time_sec": number,
           "model_used": "model_name"
         }
       ]
@@ -75,26 +92,15 @@ Each result file contains:
   "current_policy": "final_policy_version"
 }
 ```
-
-## Key Findings
-
-The simulations demonstrate:
-- How different AI models respond to policy feedback scenarios
-- Evolution of policy language through iterative refinement
-- Response time variations between models and personas
-- Differences between single-model vs mixed-model approaches
-
 ## Usage
-
 To run new simulations:
-1. Configure model choice and simulation parameters in `model_var.py`
-2. Set your Hugging Face token for model access
-3. Run the script to generate new results
-4. Results are automatically saved as JSON files
 
+Set Up: Configure your desired model choice, simulation mode (single or mixed), and iteration parameters in model_var.py.
 
-## Notes
+Authentication: Set your Hugging Face token to grant access to the LLM models.
 
-- Some response fields may be empty due to model filtering or generation issues
-- Response times vary significantly based on hardware and model complexity
-- The simulations provide insights into AI model behavior in policy-making contexts
+Run: Execute the model_var.py script.
+
+Output: Results are automatically saved as JSON files in the appropriate directory.
+
+Note: Response times vary significantly based on hardware and the complexity of the LLM model being used. Some response fields may be empty due to model filtering or generation issues.
